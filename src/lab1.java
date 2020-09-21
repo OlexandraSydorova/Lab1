@@ -49,7 +49,9 @@ public class lab1 {
         try {
 
             Scanner sc = new Scanner(file);
+            Scanner sc1 = new Scanner(file);
             PrintWriter res = new PrintWriter(file_res);
+            boolean ch = false;
             while(sc.hasNext()){
 
                 String data = sc.nextLine();
@@ -62,7 +64,22 @@ public class lab1 {
                 {
 
                     k = 0;
-                    if (i == 0 && line[i] == '\"')
+                    if (i <= line.length-3&&((line[i] == '/' && line[i+1] == '*')||ch))
+                    {
+                        k = i + 2;
+                        ch = true;
+                        while (k <= line.length-3 && line[k] != '*' && line[k+1]!='/') {
+                            k++;
+                        }
+
+                        res.write("\r\n");
+                        if(line[k] == '*' && line[k+1]=='/') {
+                            ch = false;
+                            break;
+                        }
+                        i = k;
+                    }
+                    if (i == 0 && line[i] == '\"' && !ch)
                     {
                         k = i+1;
                         while (k!=line.length)
@@ -84,7 +101,7 @@ public class lab1 {
                             k++;
                         }
                     }
-                    if (i!=0)
+                    if (i!=0 && !ch)
                         if (line[i-1] == delim[0] && line[i] == '\"')
                         {
                             k = i+1;
@@ -107,21 +124,22 @@ public class lab1 {
                                 k++;
                             }
                         }
-                    if (line[i] != delim[0] && i<line.length-1 )
+                    if (line[i] != delim[0] && i<line.length-1 && !ch)
                     {
                         count++;
                     }
                     else
                     {
-
-                        if (i != line.length - 1)
-                            res.write(count + diz);
-                        else {
-                            if (line[i] != delim[0])
-                                count++;
-                            res.write(count + "\r\n");
+                        if (!ch) {
+                            if (i != line.length - 1)
+                                res.write(count + diz);
+                            else {
+                                if (line[i] != delim[0])
+                                    count++;
+                                res.write(count + "\r\n");
+                            }
+                            count = 0;
                         }
-                        count = 0;
                     }
 
                 }
